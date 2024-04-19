@@ -1,16 +1,17 @@
 {
-    inputs.nixpkgs.url = github:NixOS/nixpkgs/master;
+    inputs = {
+        nixpkgs.url = github:NixOS/nixpkgs/master;
  
-    inputs.home-manager.url = github:nix-community/home-manager/master;
-    inputs.home-manager.inputs.nixpkgs.follows = "nixpkgs";
-    inputs.agenix.url = github:ryantm/agenix;
-    inputs.agenix.inputs.nixpkgs.follows = "nixpkgs";
-    inputs.tomato-c.url = "github:gabrielzschmitz/Tomato.C";
-    inputs.tomato-c.inputs.nixpkgs.follows = "nixpkgs";
-    #inputs.nix-colors.url = "github:misterio77/nix-colors";
-    inputs.battery-notifier.url = "github:CarlosCraveiro/battery-notifier";
-    
-  outputs = { self, nixpkgs, home-manager, agenix, battery-notifier,  ... }@attrs:
+        home-manager.url = github:nix-community/home-manager/master;
+        home-manager.inputs.nixpkgs.follows = "nixpkgs";
+        agenix.url = github:ryantm/agenix;
+        agenix.inputs.nixpkgs.follows = "nixpkgs";
+        tomato-c.url = "github:gabrielzschmitz/Tomato.C";
+        tomato-c.inputs.nixpkgs.follows = "nixpkgs";
+        nix-colors.url = "github:misterio77/nix-colors";
+        battery-notifier.url = "github:luisnquin/battery-notifier";
+    };
+      outputs = { self, nixpkgs, home-manager, agenix, battery-notifier,  ... }@attrs:
     let
         system = "x86_64-linux";
         pkgs = import nixpkgs {
@@ -33,20 +34,7 @@
       
       modules = [ 
         ./configuration.nix
-        agenix.nixosModules.default
-        battery-notifier.homeManagerModule.default
-        {
-          programs.battery-notifier = {
-            enable = true;
-            settings = {
-              icon_path = "/home/coveiro/Downloads/SVG/\"LD+R Ofer's Skull.svg\""; # Nix path
-              interval_ms = 700;
-              reminder = {threshold = 50;}; 
-              warn = {threshold = 30;};
-              threat = {threshold = 12;};
-            };
-          };
-        }
+        agenix.nixosModules.default 
       ];
     };
      homeConfigurations = {
@@ -61,12 +49,20 @@
                     homeDirectory = "/home/coveiro";
                 };
             }
+            battery-notifier.homeManagerModule.default
+            {
+          services.battery-notifier = {
+            enable = true;
+            settings = {
+              icon_path = "/home/coveiro/Downloads/SVG/\"LD+R Ofer's Skull.svg\""; # Nix path
+              interval_ms = 700;
+              reminder = {threshold = 50;}; 
+              warn = {threshold = 30;};
+              threat = {threshold = 12;};
+            };
+          };
+        }
         ];
-        #modules = [./home/misterio/atlas.nix];
-        #pkgs = pkgsFor.x86_64-linux;
-        #extraSpecialArgs = {
-        #  inherit inputs outputs;
-        #};
       };
     };
   };

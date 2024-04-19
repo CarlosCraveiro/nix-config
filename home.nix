@@ -53,6 +53,7 @@
 
 		programs.zsh = {
 			enable = true;
+            #autosuggestion.enable = true;
 			initExtra = "eval \"$(direnv hook zsh)\"\n eval \"$(ssh-agent -s)\" >> /dev/null";
 			shellAliases = {
 				enmh_right = "xrandr --output eDP-1 --auto --output HDMI-1 --auto --right-of eDP-1";
@@ -60,7 +61,9 @@
 				matlab = "nix run gitlab:doronbehar/nix-matlab";
 				zshell = "nix-shell --run zsh";
 				vpnusp = "sudo openconnect --protocol=anyconnect --user=12547187 --passwd-on-stdin --server=vpn.semfio.usp.br";
-				nixconf = "nvim /home/coveiro/.config/nixos/configuration.nix";
+				sysconf = "nvim /home/coveiro/.config/nixos/configuration.nix";
+				nixconf = "nvim /home/coveiro/.config/nixos/flake.nix";
+				homeconf = "nvim /home/coveiro/.config/nixos/home.nix";
 				ll = "ls -l";
 				update = "sudo nixos-rebuild switch --flake '/home/coveiro/.config/nixos#roxanne'";
 				cls = "clear";
