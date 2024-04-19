@@ -13,10 +13,19 @@
   outputs = { self, nixpkgs, home-manager, agenix, battery-notifier,  ... }@attrs:
     let
         system = "x86_64-linux";
+        pkgs = import nixpkgs {
+            inherit system;
+            allowUnfree = true;
+            permittedInsecurePackages = [];
+            overlays = [];
+        };
+
+        lib = nixpkgs.lib;
     in
   {
     nixosConfigurations.roxanne = nixpkgs.lib.nixosSystem {
       inherit system;
+      inherit pkgs;
       
       specialArgs = attrs;
       
@@ -38,15 +47,25 @@
         }
       ];
     };
-     #homeConfigurations = {
+     homeConfigurations = {
       # Desktops
-      #"coveiro@idefix" = home-manager.lib.homeManagerConfiguration {
+      coveiro = home-manager.lib.homeManagerConfiguration {
+        inherit pkgs;
+        modules = [
+            ./home.nix
+            {
+                home = {
+                    username = "coveiro";
+                    homeDirectory = "/home/coveiro";
+                };
+            }
+        ];
         #modules = [./home/misterio/atlas.nix];
         #pkgs = pkgsFor.x86_64-linux;
         #extraSpecialArgs = {
         #  inherit inputs outputs;
         #};
-      #};
-    #};
+      };
+    };
   };
 }
