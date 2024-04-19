@@ -117,6 +117,7 @@
 				vim-move
 				vim-airline
 				vim-airline-themes
+                vim-just
                 {
                     plugin = vim-fugitive;
                     #config = toLuaFile ./nvim/plugin/vim-pencil.lua;

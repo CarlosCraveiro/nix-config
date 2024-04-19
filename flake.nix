@@ -15,15 +15,17 @@
         system = "x86_64-linux";
         pkgs = import nixpkgs {
             inherit system;
-            allowUnfree = true;
-            permittedInsecurePackages = [];
+            config = {
+             allowUnfree = true;
+             permittedInsecurePackages = [ ];
+           };
             overlays = [];
         };
 
-        lib = nixpkgs.lib;
+        lib = nixpkgs.lib // home-manager.lib;
     in
   {
-    nixosConfigurations.roxanne = nixpkgs.lib.nixosSystem {
+    nixosConfigurations.roxanne = lib.nixosSystem {
       inherit system;
       inherit pkgs;
       
@@ -49,7 +51,7 @@
     };
      homeConfigurations = {
       # Desktops
-      coveiro = home-manager.lib.homeManagerConfiguration {
+      coveiro = lib.homeManagerConfiguration {
         inherit pkgs;
         modules = [
             ./home.nix

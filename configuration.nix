@@ -3,7 +3,7 @@ let
         system = "x86_64-linux";
 in
 {
-	nixpkgs.config.allowUnfree = true;
+    #nixpkgs.config.allowUnfree = true;
   imports =
     [ # Include the results of the hardware scan. 
       	./hardware-configuration.nix
