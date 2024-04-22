@@ -11,16 +11,22 @@
         nix-colors.url = "github:misterio77/nix-colors";
         battery-notifier.url = "github:luisnquin/battery-notifier";
     };
-      outputs = { self, nixpkgs, home-manager, agenix, battery-notifier,  ... }@attrs:
+      outputs = { self, nixpkgs, home-manager, agenix, battery-notifier, 
+      nix-colors, tomato-c, ... }@attrs:
     let
         system = "x86_64-linux";
+
+        tomato-c-overlay = final: prev: {
+            tomato-c = tomato-c.defaultPackage.${system};
+        };
+
         pkgs = import nixpkgs {
             inherit system;
             config = {
              allowUnfree = true;
              permittedInsecurePackages = [ ];
            };
-            overlays = [];
+            overlays = [ tomato-c-overlay ];
         };
 
         lib = nixpkgs.lib // home-manager.lib;
@@ -41,6 +47,8 @@
       # Desktops
       coveiro = lib.homeManagerConfiguration {
         inherit pkgs;
+
+        extraSpecialArgs = { inherit nix-colors; };
         modules = [
             ./home.nix
             {

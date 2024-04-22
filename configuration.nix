@@ -11,6 +11,9 @@ in
     ];
 
 	nix.settings.experimental-features = ["nix-command" "flakes"];
+    
+    # REMOVE THIS LINE AFTER IA
+    hardware.opengl.enable = true;
 
     # Use the systemd-boot EFI boot loader.
   	# boot.loader.systemd-boot.enable = true;
@@ -242,33 +245,44 @@ networking.wireless = {
 	environment.pathsToLink = [ "/libexec" ]; 
 	environment.variables.EDITOR = "nvim";
   # Enable the X11 windowing system.
-	services.xserver = {
-		enable = true;
-		
-    	xkb.layout = "br,us,jp";
-		xkb.variant = ",alt-intl,kana";
-		xkb.options = "grp:win_space_toggle";
-
-		desktopManager = {
-			xterm.enable = false;
-		};
-
-		displayManager = {
+	
+    services = {
+        
+        displayManager = {
 			defaultSession = "none+i3";
-			lightdm.enable = true;
+			#lightdm.enable = true;
 			autoLogin.enable = true;
 			autoLogin.user = "coveiro";
 		};
+        
+        xserver = {
+		    enable = true;
 		
-		windowManager.i3 = {
-			enable = true;	
-			extraPackages = with pkgs ;[
-				dmenu
-				i3status
-				i3lock
-			];
+    	    xkb.layout = "br,us,jp";
+		    xkb.variant = ",alt-intl,kana";
+		    xkb.options = "grp:win_space_toggle";
+
+		    desktopManager = {
+			    xterm.enable = false;
+		    };
+
+		displayManager = {
+	#		defaultSession = "none+i3";
+			lightdm.enable = true;
+	#		autoLogin.enable = true;
+	#		autoLogin.user = "coveiro";
 		};
-	};
+		
+		    windowManager.i3 = {
+			    enable = true;	
+			    extraPackages = with pkgs ;[
+				    dmenu
+				    i3status
+				    i3lock
+			    ];
+		    };
+	    };
+    };
     
   ###############################
   ## Input Method Editor (IME) ##
@@ -386,7 +400,7 @@ fonts = {
 	tldr
     agenix.packages.x86_64-linux.default
     (pkgs.sdcc.override { withGputils = true; })
-    simulide # from minepkgs
+    simulide
     gputils
     podman
     kicad
@@ -401,6 +415,8 @@ fonts = {
     inkscape
     bat
     just
+    tomato-c
+    texliveFull
   ];	
 
 	programs.light.enable = true;

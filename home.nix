@@ -1,8 +1,33 @@
-{pkgs, inputs, lib, ...}:
+{pkgs, inputs, lib, nix-colors, ...}:
 {
     imports = [
+        nix-colors.homeManagerModules.default
     ];
-  		home.packages = [ pkgs.atool pkgs.httpie ];
+  		colorScheme = {
+    slug = "adamsmasher";
+    name = "AdamSmasher";
+    author = "Carlos Craveiro (https://github.com/CarlosCraveiro)";
+    palette = {
+      base00 = "#01000E";
+      base01 = "#071923";
+      base02 = "#192A24";
+      base03 = "#595495";
+      base04 = "#A0C7E5";
+      base05 = "#FC3636";
+      base06 = "#17263B";
+      base07 = "#FC3636"; # Left unset
+      base08 = "#49EF8C";
+      base09 = "#D1F640";
+      base0A = "#7BA9EF";
+      base0B = "#509999";
+      base0C = "#64D6BE";
+      base0D = "#C2D1CC";
+      base0E = "#FBD9AB";
+      base0F = "#912626";
+    };
+  };
+        
+        home.packages = [ pkgs.atool pkgs.httpie ];
 		
 		services.dunst = {
 			enable = true;
@@ -68,7 +93,6 @@
 				update = "sudo nixos-rebuild switch --flake '/home/coveiro/.config/nixos#roxanne'";
 				cls = "clear";
 				kssh = "kitty +kitten ssh";
-				tomato-c = "nix run github:gabrielzschmitz/Tomato.C";
 			};
 			
 			oh-my-zsh = {
@@ -114,6 +138,14 @@
                 {
                     plugin = deoplete-nvim;
                     config = toLuaFile ./nvim/plugin/deoplete-nvim.lua;
+                }
+                {
+                    plugin = project-nvim;
+                    config = toLuaFile ./nvim/plugin/project-nvim.lua;
+                }
+                {
+                    plugin = vimtex;
+                    config = toLuaFile ./nvim/plugin/vimtex.lua;
                 }
 				vim-floaterm
 				nvim-notify
