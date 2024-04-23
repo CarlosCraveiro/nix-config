@@ -1,4 +1,4 @@
-{pkgs, inputs, lib, nix-colors, ...}:
+{pkgs, inputs, lib, nix-colors, agenix, config, ...}:
 {
     imports = [
         nix-colors.homeManagerModules.default
@@ -75,17 +75,20 @@
                     "toggle_custom_color" = "<C-r>";
                 };
             };
-
+        age.secrets.nusp.file = builtins.toPath /home/coveiro/.config/nixos/secrets/nusp.age;
 		programs.zsh = {
 			enable = true;
             #autosuggestion.enable = true;
 			initExtra = "eval \"$(direnv hook zsh)\"\n eval \"$(ssh-agent -s)\" >> /dev/null";
-			shellAliases = {
+			shellAliases = let
+                rawnusp = builtins.readFile config.age.secrets.nusp.path;
+                nusp = builtins.replaceStrings ["\n" " "] ["" ""] rawnusp; 
+            in{
 				enmh_right = "xrandr --output eDP-1 --auto --output HDMI-1 --auto --right-of eDP-1";
 				enmh_left = "xrandr --output eDP-1 --auto --output HDMI-1 --auto --left-of eDP-1";
 				matlab = "nix run gitlab:doronbehar/nix-matlab";
 				zshell = "nix-shell --run zsh";
-				vpnusp = "sudo openconnect --protocol=anyconnect --user=12547187 --passwd-on-stdin --server=vpn.semfio.usp.br";
+				vpnusp = "sudo openconnect --protocol=anyconnect --user=${nusp} --passwd-on-stdin --server=vpn.semfio.usp.br";
 				sysconf = "nvim /home/coveiro/.config/nixos/configuration.nix";
 				nixconf = "nvim /home/coveiro/.config/nixos/flake.nix";
 				homeconf = "nvim /home/coveiro/.config/nixos/home.nix";

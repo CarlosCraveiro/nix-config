@@ -51,6 +51,7 @@
         extraSpecialArgs = { inherit nix-colors; };
         modules = [
             ./home.nix
+            agenix.homeManagerModules.default
             {
                 home = {
                     username = "coveiro";
