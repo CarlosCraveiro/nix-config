@@ -137,7 +137,10 @@
             '';
 			
 			plugins = with pkgs.vimPlugins; [
-				ale
+				{
+                    plugin = ale;
+                    config = toLuaFile ./nvim/plugin/ale.lua;
+                }
                 {
                     plugin = deoplete-nvim;
                     config = toLuaFile ./nvim/plugin/deoplete-nvim.lua;
