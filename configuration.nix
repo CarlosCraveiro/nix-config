@@ -11,9 +11,6 @@ in
     ];
 
 	nix.settings.experimental-features = ["nix-command" "flakes"];
-    
-    # REMOVE THIS LINE AFTER IA
-    hardware.opengl.enable = true;
 
     # Use the systemd-boot EFI boot loader.
   	# boot.loader.systemd-boot.enable = true;
@@ -278,11 +275,19 @@ networking.wireless = {
 			    extraPackages = with pkgs ;[
 				    dmenu
 				    i3status
-				    i3lock
+				    i3lock-fancy-rapid
 			    ];
 		    };
 	    };
     };
+   
+   programs.xss-lock = {
+        enable = true;
+        extraOptions = [
+            "--transfer-sleep-lock"
+        ];
+        lockerCommand = "${pkgs.i3lock-fancy-rapid}/bin/i3lock-fancy-rapid 5 pixel -k --nofork";
+   };
     
   ###############################
   ## Input Method Editor (IME) ##
@@ -417,6 +422,9 @@ fonts = {
     just
     tomato-c
     texliveFull
+    statix
+    alejandra
+    retroarchFull
   ];	
 
 	programs.light.enable = true;

@@ -81,19 +81,19 @@
             #autosuggestion.enable = true;
 			initExtra = "eval \"$(direnv hook zsh)\"\n eval \"$(ssh-agent -s)\" >> /dev/null";
 			shellAliases = let
-                rawnusp = builtins.readFile config.age.secrets.nusp.path;
-                nusp = builtins.replaceStrings ["\n" " "] ["" ""] rawnusp; 
+                #rawnusp = builtins.readFile config.age.secrets.nusp.path;
+                #nusp = builtins.replaceStrings ["\n" " "] ["" ""] rawnusp; 
             in{
 				enmh_right = "xrandr --output eDP-1 --auto --output HDMI-1 --auto --right-of eDP-1";
 				enmh_left = "xrandr --output eDP-1 --auto --output HDMI-1 --auto --left-of eDP-1";
 				matlab = "nix run gitlab:doronbehar/nix-matlab";
 				zshell = "nix-shell --run zsh";
-				vpnusp = "sudo openconnect --protocol=anyconnect --user=${nusp} --passwd-on-stdin --server=vpn.semfio.usp.br";
+				#vpnusp = "sudo openconnect --protocol=anyconnect --user=${nusp} --passwd-on-stdin --server=vpn.semfio.usp.br";
 				sysconf = "nvim /home/coveiro/.config/nixos/configuration.nix";
 				nixconf = "nvim /home/coveiro/.config/nixos/flake.nix";
 				homeconf = "nvim /home/coveiro/.config/nixos/home.nix";
 				ll = "ls -l";
-				update = "sudo nixos-rebuild switch --flake '/home/coveiro/.config/nixos#roxanne'";
+				update = "cd /home/coveiro/.config/nixos; just all; cd -";
 				cls = "clear";
 				kssh = "kitty +kitten ssh";
 			};
@@ -223,7 +223,10 @@
                         smartGaps = true;
 
 					};
-					keybindings = lib.mkOptionDefault {
+					keybindings = let
+                        modifier = config.xsession.windowManager.i3.config.modifier;
+                    in lib.mkOptionDefault {
+
 			#"XF86AudioRaiseVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ +10% && $refresh_i3status";
 			#"XF86AudioLowerVolume" = "exec --no-startup-id pactl set-sink-volume @DEFAULT_SINK@ -10% && $refresh_i3status";
   			#"XF86AudioMute" = "exec --no-startup-id pactl set-sink-mute @DEFAULT_SINK@ toggle && $refresh_i3status";
@@ -235,7 +238,8 @@
 			"XF86AudioMicMute" = "exec --no-startup-id pactl set-source-mute @DEFAULT_SOURCE@ toggle && $refresh_i3status";
 			"XF86MonBrightnessUp" = "exec --no-startup-id light -A 10 && dunstify -i /run/current-system/sw/share/icons/Adwaita/96x96/status/display-brightness-symbolic.symbolic.png -t 1500 -h int:value:$(light | cut -d. -f1) -h string:synchronous:brightness \"Brightness $(light | cut -d. -f1)%\" -r 1000";
 			"XF86MonBrightnessDown" = "exec --no-startup-id light -U 10 && dunstify -i /run/current-system/sw/share/icons/Adwaita/96x96/status/display-brightness-symbolic.symbolic.png -t 1500 -h int:value:$(light | cut -d. -f1) -h string:synchronous:brightness \"Brightness $(light | cut -d. -f1)%\" -r 1000";	
-			"Print" = "exec --no-startup-id import ~/Images/Screenshots/Screenshot-$(date +\"%Y-%m-%d_%H-%M-%S\").png"; 
+			"Print" = "exec import ~/Images/Screenshots/Screenshot-$(date +\"%Y-%m-%d_%H-%M-%S\").png"; 
+			"${modifier}+Control+l" = "exec --no-startup-id xset s activate"; 
 
             # xclip -sel clip -t image/png ~/Images/Screenshots/Screenshot-$(date +\"%Y-%m-%d_%H-%M-%S\").png"; -- alternativa para passar p clipboard
 
