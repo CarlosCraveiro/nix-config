@@ -19,6 +19,10 @@
         tomato-c-overlay = final: prev: {
             tomato-c = tomato-c.defaultPackage.${system};
         };
+        
+        i3lock-fancy-rapid-overlay = final: prev: {
+            i3lock-fancy-rapid = pkgs.callPackage ./custom_packages/i3lock-fancy-rapid.nix {};
+        };
 
         pkgs = import nixpkgs {
             inherit system;
@@ -26,7 +30,7 @@
              allowUnfree = true;
              permittedInsecurePackages = [ ];
            };
-            overlays = [ tomato-c-overlay ];
+            overlays = [ tomato-c-overlay  i3lock-fancy-rapid-overlay ];
         };
 
         lib = nixpkgs.lib // home-manager.lib;
