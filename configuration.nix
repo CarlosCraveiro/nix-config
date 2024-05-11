@@ -1,4 +1,4 @@
-{ config, lib, pkgs, agenix, ... }:
+{ config, lib, pkgs, agenix, nix-colors, ... }:
 let
         system = "x86_64-linux";
 in
@@ -7,6 +7,8 @@ in
   imports =
     [ # Include the results of the hardware scan. 
       	./hardware-configuration.nix
+        nix-colors.homeManagerModules.default
+
 	    #home-manager.nixosModules.default 
     ];
 
@@ -16,7 +18,30 @@ in
   	# boot.loader.systemd-boot.enable = true;
   	# boot.loader.systemd-boot.configurationLimit = 5;
   	# boot.loader.efi.canTouchEfiVariables = true;
-  	
+    
+    colorScheme = {
+    slug = "adamsmasher";
+    name = "AdamSmasher";
+    author = "Carlos Craveiro (https://github.com/CarlosCraveiro)";
+    palette = {
+      base00 = "#01000E";
+      base01 = "#071923";
+      base02 = "#192A24";
+      base03 = "#595495";
+      base04 = "#A0C7E5";
+      base05 = "#FC3636";
+      base06 = "#17263B";
+      base07 = "#FC3636"; # Left unset
+      base08 = "#49EF8C";
+      base09 = "#D1F640";
+      base0A = "#7BA9EF";
+      base0B = "#509999";
+      base0C = "#64D6BE";
+      base0D = "#C2D1CC";
+      base0E = "#FBD9AB";
+      base0F = "#912626";
+    };
+  };  	
     boot.loader.grub.enable = true;
     boot.loader.grub.configurationLimit = 5;
     boot.loader.grub.copyKernels           = true;
@@ -64,7 +89,7 @@ age.secrets.casa_talma.file = builtins.toPath /home/coveiro/.config/nixos/secret
 age.secrets.jade_rioclaro.file = builtins.toPath /home/coveiro/.config/nixos/secrets/jade_rioclaro.age;
 
 
-networking.nameservers = ["1.1.1.1" "9.9.9.9"];
+#networking.nameservers = ["1.1.1.1" "9.9.9.9"];
 networking.wireless = {
     enable = true;
     userControlled.enable = true;
@@ -254,7 +279,16 @@ networking.wireless = {
         
         xserver = {
 		    enable = true;
-		
+	        #extraConfig = ''
+            #Section "Device"
+            #    Identifier "Intel Graphics"
+            #    Driver "Intel"
+            #EndSection
+            #'';
+            monitorSection = ''
+                
+            '';
+
     	    xkb.layout = "br,us,jp";
 		    xkb.variant = ",alt-intl,kana";
 		    xkb.options = "grp:win_space_toggle";
@@ -275,7 +309,7 @@ networking.wireless = {
 			    extraPackages = with pkgs ;[
 				    dmenu
 				    i3status
-				    i3lock-fancy-rapid
+                    i3lock-fancy-rapid
 			    ];
 		    };
 	    };
@@ -285,8 +319,8 @@ networking.wireless = {
         enable = true;
         extraOptions = [
             "--transfer-sleep-lock"
-        ];
-        lockerCommand = "${pkgs.i3lock-fancy-rapid}/bin/i3lock-fancy-rapid 5 pixel -k --nofork";
+        ]; # 5 pixel
+        lockerCommand = "${pkgs.i3lock-fancy-rapid}/bin/i3lock-fancy-rapid 5 pixel -k --inside-color=#${config.colorScheme.palette.base00} --ring-color=#${config.colorScheme.palette.base0C} --insidever-color=#${config.colorScheme.palette.base00} --ringver-color=#${config.colorScheme.palette.base0A} --insidewrong-color=#${config.colorScheme.palette.base00} --ringwrong-color=#${config.colorScheme.palette.base05} --keyhl-color=#${config.colorScheme.palette.base08} --bshl-color=#${config.colorScheme.palette.base0F} --verif-color=#${config.colorScheme.palette.base04} --wrong-color=#${config.colorScheme.palette.base04} --modif-color=#${config.colorScheme.palette.base04} --layout-color=#${config.colorScheme.palette.base0C} --time-color=#${config.colorScheme.palette.base0C} --date-color=#${config.colorScheme.palette.base0C} --greeter-color=#${config.colorScheme.palette.base0C}";
    };
     
   ###############################
@@ -425,6 +459,8 @@ fonts = {
     statix
     alejandra
     retroarchFull
+    tree
+    cowsay
   ];	
 
 	programs.light.enable = true;
@@ -449,7 +485,13 @@ fonts = {
   # List services that you want to enable:
 
   # Enable the OpenSSH daemon.
-  services.openssh.enable = true;
+  services.openssh = {
+    enable = true;
+    settings = {
+        PasswordAuthentication = false;
+        KbdInteractiveAuthentication = false;
+    };
+  };
 
   # Man Pages
   documentation.dev.enable = true;
